@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <title>이번주 순번표</title>
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <!-- pwa meta-->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Theway-noti">
+  <link rel="apple-touch-icon" href="/images/icon_192.png">
+</head>
+
+<body class="container py-4">
+  <h1 class="mb-4 text-center">이번주 순번표</h1>
+  <h3 class="mb-4 text-center" th:text="${schedule['value'][0]}"></h3>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th scope="col" 
+            th:each="header, iterStat : ${schedule['header']}" 
+            th:if="${iterStat.index > 0 and iterStat.index < schedule['header'].size() - 1}"
+            th:text="${header}">
+            Header
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td 
+            th:each="val, iterStat : ${schedule['value']}" 
+            th:if="${iterStat.index > 0 and iterStat.index < schedule['header'].size() - 1}"
+            th:text="${val}">
+            Value
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+
+</html>
