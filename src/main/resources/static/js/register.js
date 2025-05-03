@@ -151,11 +151,12 @@ function checkHideDropdown() {
   }, 200);
 }
 
-roleInput.addEventListener('mouseenter', showDropdown);
-roleDropdown.addEventListener('mouseenter', showDropdown);
+let isDropdownOpen = false;
 
-roleInput.addEventListener('mouseleave', checkHideDropdown);
-roleDropdown.addEventListener('mouseleave', checkHideDropdown);
+roleInput.addEventListener('click', () => {
+  isDropdownOpen = !isDropdownOpen;
+  roleDropdown.style.display = isDropdownOpen ? 'block' : 'none';
+});
 
 // 초기 렌더링
 renderDropdown();

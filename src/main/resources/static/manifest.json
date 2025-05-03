@@ -1,6 +1,6 @@
 {
-  "name": "Silk Road WebPush",
-  "short_name": "WebPush",
+  "name": "Theway-Noti",
+  "short_name": "theway noti",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

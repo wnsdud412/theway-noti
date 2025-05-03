@@ -64,7 +64,7 @@ public class WebpushController {
   @ResponseBody
   public String deleteSubscription(@PathVariable Long id, Principal principal) {
     webpushService.deleteSubscription(id);
-    return "deleted";
+    return "redirect:/";
   }
 
   @GetMapping("/push-test")
