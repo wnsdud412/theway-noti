@@ -70,23 +70,17 @@ const roleInput = document.getElementById('role-input');
 const roleDropdown = document.getElementById('role-dropdown');
 let dropdownHideTimeout;
 
-const availableRoles = [
-  { code: 'LEADER', name: '인도자' },
-  { code: 'MAIN', name: '메인' },
-  { code: 'SECOND', name: '세컨' },
-  { code: 'DRUMS', name: '드럼' },
-  { code: 'BASS', name: '베이스' },
-  { code: 'ELECTRIC_GUITAR', name: '일렉' },
-  { code: 'ACOUSTIC_GUITAR', name: '통기타' },
-  { code: 'SINGER_MALE', name: '싱어(남)' },
-  { code: 'SINGER_FEMALE', name: '싱어(여)' },
-  { code: 'SHEET_MUSIC', name: '악보' },
-  { code: 'LYRICS_DISPLAY', name: '자막' },
-  { code: 'SINGER_MANAGER', name: '싱어 팀장' },
-  { code: 'INSTRUMENT_MANAGER', name: '악기 팀장' },
-  { code: 'NONE', name: '없음' }
-];
+async function loadRoles() {
+  const roleResponse = await fetch('/roles');
+  return await roleResponse.json();
+}
 
+let availableRoles;
+
+loadRoles().then(data => {
+  availableRoles = data;
+  renderDropdown();
+});
 const selectedRoles = new Set();
 
 function renderDropdown() {
@@ -159,4 +153,3 @@ roleInput.addEventListener('click', () => {
 });
 
 // 초기 렌더링
-renderDropdown();

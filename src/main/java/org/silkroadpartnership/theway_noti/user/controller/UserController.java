@@ -1,7 +1,13 @@
 package org.silkroadpartnership.theway_noti.user.controller;
 
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.silkroadpartnership.theway_noti.user.entity.Role;
 import org.silkroadpartnership.theway_noti.user.entity.User;
 import org.silkroadpartnership.theway_noti.user.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -9,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +65,19 @@ public class UserController {
       Principal principal) {
     userService.updateNicknamesAndRoles(principal.getName(), nicknames, roles);
     return "redirect:/";
+  }
+
+  @GetMapping("/roles")
+  @ResponseBody
+  public List<Map<String, String>> getRoles() {
+    return Arrays.stream(Role.values())
+        .map(role -> {
+          Map<String, String> roleMap = new HashMap<>();
+          roleMap.put("code", role.name());
+          roleMap.put("name", role.getKoreanName());
+          return roleMap;
+        })
+        .collect(Collectors.toList());
   }
 
 }

@@ -26,7 +26,9 @@ public class SecurityConfig {
                 "/sw.js",
                 "manifest.json",
                 "/webpush/open-url",
-                "/webpush/close-url")
+                "/webpush/close-url",
+                "/roles"
+                )
             .permitAll()
             .anyRequest().authenticated())
         .formLogin(form -> form
