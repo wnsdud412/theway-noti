@@ -13,4 +13,4 @@ RUN apt-get update && \
 WORKDIR /app
 
 # 컨테이너에서 실행할 명령어
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]

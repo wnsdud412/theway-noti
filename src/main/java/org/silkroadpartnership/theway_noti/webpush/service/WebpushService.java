@@ -2,6 +2,9 @@ package org.silkroadpartnership.theway_noti.webpush.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +154,14 @@ public class WebpushService {
     PushHistory pushHistory = pushHistoryRepository.findById(pushId)
         .orElseThrow(() -> new NoSuchElementException("히스토리 없음"));
     pushHistory.setCheckYn(checkYn ? 1 : 0);
+  }
+
+  public List<PushHistory> findTodayPushHistoryByRole(Role role) {
+    LocalDate today = LocalDate.now();
+    LocalDateTime start = today.atStartOfDay();
+    LocalDateTime end = today.atTime(LocalTime.MAX);
+
+    return pushHistoryRepository.findByCreateDateBetweenAndRole(start, end, role);
   }
 
 }

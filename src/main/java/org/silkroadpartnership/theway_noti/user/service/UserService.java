@@ -1,11 +1,14 @@
 package org.silkroadpartnership.theway_noti.user.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.silkroadpartnership.theway_noti.user.entity.Role;
 import org.silkroadpartnership.theway_noti.user.entity.User;
+import org.silkroadpartnership.theway_noti.user.entity.UserManageDto;
 import org.silkroadpartnership.theway_noti.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -68,8 +71,50 @@ public class UserService implements UserDetailsService {
             .map(nameStr -> nameStr.trim())
             .collect(Collectors.toList()));
     user.setRoles(
-      Arrays.stream(roles.split(","))
-          .map(roleStr -> Role.valueOf(roleStr))
-          .collect(Collectors.toSet()));
+        Arrays.stream(roles.split(","))
+            .map(roleStr -> Role.valueOf(roleStr))
+            .collect(Collectors.toSet()));
+  }
+
+  public List<User> findByNickname(String nickname) {
+    return userRepository.findByNickname(nickname);
+  }
+
+  public List<User> findByRole(Role role) {
+    return userRepository.findByRole(role.name());
+  }
+
+  public List<UserManageDto> findAllByManageDto() {
+    return userRepository.findAll().stream()
+        .filter(user -> !"admin".equals(user.getUsername()))
+        .map(user -> UserManageDto.builder()
+            .id(user.getId())
+            .name(user.getUsername())
+            .nickname(String.join(",", user.getNickname()))
+            .admin(user.getPermissions().contains("ADMIN"))
+            .build())
+        .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void toggleAdmin(Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + userId));
+    Set<String> updated = new HashSet<>(user.getPermissions());
+    if (updated.contains("ADMIN")) {
+      updated.remove("ADMIN");
+    } else {
+      updated.add("ADMIN");
+    }
+
+    user.getPermissions().clear();
+    user.getPermissions().addAll(updated);
+  }
+
+  @Transactional
+  public void resetPassword(Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + userId));
+    user.setPassword(passwordEncoder.encode("12345"));
   }
 }

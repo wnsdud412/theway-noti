@@ -18,5 +18,10 @@
     "name": "gsheet.spreadsheetId",
     "type": "java.lang.String",
     "description": "A description for 'gsheet.SPREADSHEET_-iD'"
+  },
+  {
+    "name": "spring.task.scheduling.time-zone",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.task.scheduling.time-zone'"
   }
 ]}

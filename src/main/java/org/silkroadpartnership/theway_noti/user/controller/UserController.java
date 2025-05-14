@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -78,6 +79,28 @@ public class UserController {
           return roleMap;
         })
         .collect(Collectors.toList());
+  }
+
+  @GetMapping("/users/manage")
+  public String getUserManage(Model model, Principal principal) {
+    model.addAttribute("users", userService.findAllByManageDto());
+    return "manage";
+  }
+
+  @PostMapping("/users/toggle-admin")
+  public String toggleAdmin(@RequestParam("userId") Long userId, HttpServletRequest request) {
+    userService.toggleAdmin(userId);
+
+    String referer = request.getHeader("Referer");
+    return "redirect:" + referer;
+  }
+
+  @PostMapping("/users/reset-password")
+  public String resetPassword(@RequestParam("userId") Long userId, HttpServletRequest request) {
+    userService.resetPassword(userId);
+
+    String referer = request.getHeader("Referer");
+    return "redirect:" + referer;
   }
 
 }

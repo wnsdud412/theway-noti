@@ -20,6 +20,9 @@ spring:
     time-zone: Asia/Seoul
   config:
     import: optional:dotenv:.env
+  task: 
+    scheduling:
+      time-zone: Asia/Seoul
 
 logging:
   pattern:

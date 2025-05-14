@@ -40,6 +40,11 @@
         </button>
       </div>
       <div class="col-12" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <button onclick="location.href='/users/manage'" class="btn btn-danger w-100 btn-lg">
+          회원 관리
+        </button>
+      </div>
+      <div class="col-12" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
         <button onclick="location.href='/webpush/push-test'" class="btn btn-danger w-100 btn-lg">
           푸시 테스트
         </button>
