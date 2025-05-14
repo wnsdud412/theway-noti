@@ -117,4 +117,15 @@ public class UserService implements UserDetailsService {
         .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + userId));
     user.setPassword(passwordEncoder.encode("12345"));
   }
+
+  public boolean checkPassword(String username, String password){
+    User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+    return passwordEncoder.matches(password, user.getPassword());
+  }
+
+  @Transactional
+  public void changePassword(String username, String password){
+    User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+    user.setPassword(passwordEncoder.encode(password));
+  }
 }

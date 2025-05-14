@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.silkroadpartnership.theway_noti.user.entity.Role;
 import org.silkroadpartnership.theway_noti.user.entity.User;
 import org.silkroadpartnership.theway_noti.user.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,6 +103,29 @@ public class UserController {
 
     String referer = request.getHeader("Referer");
     return "redirect:" + referer;
+  }
+
+  @GetMapping("/profile/password")
+  public String getPasswordChange(Model model, Principal principal) {
+    return "passwordChange";
+  }
+
+  @PostMapping("/profile/password")
+  @ResponseBody
+  public ResponseEntity<String> passwordChange(
+      @RequestParam String before,
+      @RequestParam String after,
+      @RequestParam String confirm,
+      Model model, Principal principal) {
+    if (!userService.checkPassword(principal.getName(), before)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("기존 비밀번호가 틀렸습니다.");
+    }
+    if (!after.equals(confirm)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호와 비밀번호 확인이 서로 다릅니다.");
+    }
+    userService.changePassword(principal.getName(), after);
+
+    return ResponseEntity.ok("비밀번호 변경 성공");
   }
 
 }
