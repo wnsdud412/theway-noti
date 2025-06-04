@@ -86,7 +86,7 @@ public class UserController {
   @GetMapping("/users/manage")
   public String getUserManage(Model model, Principal principal) {
     model.addAttribute("users", userService.findAllByManageDto());
-    return "manage";
+    return "admin/manage";
   }
 
   @PostMapping("/users/toggle-admin")

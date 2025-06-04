@@ -71,7 +71,7 @@ public class WebpushController {
   public String getPushTestPage(Model model) {
     List<WebpushSubscription> subscriptions = webpushService.findAll();
     model.addAttribute("subscriptions", subscriptions);
-    return "pushTest";
+    return "admin/pushTest";
   }
 
   // 입력된 메시지를 구독된 모든 클라이언트로 푸시 전송

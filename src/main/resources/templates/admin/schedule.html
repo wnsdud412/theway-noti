@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <title>알림 스케줄 관리</title>
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <script type="text/javascript" th:src="@{/js/schedule.js}" defer></script>
+  <!-- pwa meta-->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Theway-noti">
+  <link rel="apple-touch-icon" href="/images/icon_192.png">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <script th:inline="javascript">
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+  </script>
+</head>
+
+<body class="container py-4">
+  <h1 class="mb-4 text-center">알림 스케줄 관리</h1>
+
+  <div class="d-flex justify-content-end align-items-center mb-2">
+      <button type="button" class="btn btn-primary btn-sm" id="newRowBtn">
+        새 알림 추가
+      </button>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">대상자 조회기준</th>
+          <th scope="col">역할</th>
+          <th scope="col">반복 기준</th>
+          <th scope="col">발송일</th>
+          <th scope="col">발송시간</th>
+          <th scope="col">발송내용</th>
+          <th scope="col">저장/삭제</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="d-none" id="newRow">
+          <td>
+            <select class="form-select form-select-sm" name="targetType" id="targetType">
+              <option value="LINE_UP">순번표 기준</option>
+              <option value="ROLE">해당 역할 전체</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" name="role" id="role">
+              <option th:each="role : ${roles}" th:value="${role.code}" th:text="${role.name}">
+            </select>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" name="dayType" id="dayType">
+              <option value="WEEK">매주</option>
+              <option value="MONTH">매월</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" name="targetDay" id="targetDay">
+            </select>
+          </td>
+          <td>
+            <select class="form-select form-select-sm" name="targetHour" id="targetHour">
+            </select>
+          </td>
+          <td>
+            <input type="text" class="form-control form-control-sm" name="content" id="content" placeholder="순번표 기준 발송시 미입력"/>
+          </td>
+          <td>
+            <button class="btn btn-primary btn-sm" id="saveNewBtn">신규 저장</button>
+          </td>
+        </tr>
+        <tr th:each="schdl : ${schedules}">
+          <td th:text="${schdl.targetType != null ? schdl.targetType : '없음'}"></td>
+          <td th:text="${schdl.role != null ? schdl.role : '없음'}"></td>
+          <td th:text="${schdl.dayType != null ? schdl.dayType : '없음'}"></td>
+          <td th:text="${schdl.targetDay != null ? schdl.targetDay : '없음'}"></td>
+          <td th:text="${schdl.targetHour != null ? schdl.targetHour : '없음'}"></td>
+          <td th:text="${schdl.content != null ? schdl.content : '기본값'}"></td>
+          <td>
+            <button class="btn btn-danger btn-sm" th:onclick="deleteSchedule([[${schdl.scheduleId}]]);">삭제</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+</body>
+
+</html>

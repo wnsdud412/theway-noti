@@ -6,28 +6,26 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Role {
-    LEADER("인도자",false,true,null),
-    INSTRUMENT_MANAGER("악기 팀장",false,false,null),
-    SINGER_MANAGER("싱어 팀장",false,false,null),
-    
-    MAIN("메인",false,true,Role.INSTRUMENT_MANAGER),
-    SECOND("세컨",false,true,Role.INSTRUMENT_MANAGER),
-    DRUMS("드럼",false,true,Role.INSTRUMENT_MANAGER),
-    BASS("베이스",false,true,Role.INSTRUMENT_MANAGER),
-    ELECTRIC_GUITAR("일렉",false,true,Role.INSTRUMENT_MANAGER),
-    ACOUSTIC_GUITAR("통기타",false,false,Role.INSTRUMENT_MANAGER),
-    SHEET_MUSIC("악보",false,true,Role.INSTRUMENT_MANAGER),
+    LEADER(             "인도자",    "manage", false),
+    INSTRUMENT_MANAGER( "악기 팀장", "manage", false),
+    SINGER_MANAGER(     "싱어 팀장", "manage", false),
+    MAIN(               "메인",     "inst",  false),
+    SECOND(             "세컨",     "inst",  false),
+    DRUMS(              "드럼",     "inst",  false),
+    BASS(               "베이스",   "inst",  false),
+    ELECTRIC_GUITAR(    "일렉",     "inst",  false),
+    ACOUSTIC_GUITAR(    "통기타",   "inst",  false),
+    SHEET_MUSIC(        "악보",     "inst",  true),
 
-    SINGER_MALE("싱어(남)",true,true,Role.SINGER_MANAGER),
-    SINGER_FEMALE("싱어(여)",true,true,Role.SINGER_MANAGER),
-    LYRICS("자막",false,true,Role.SINGER_MANAGER),
+    SINGER_MALE(        "싱어(남)", "sing",   false),
+    SINGER_FEMALE(      "싱어(여)", "sing",   false),
+    LYRICS(             "자막",     "sing",  true),
 
-    NONE("없음",false,false,null);
+    NONE(               "없음",     "none",  false);
 
     private final String koreanName;
-    private final boolean needParse;
+    private final String group;
     private final boolean required;
-    private final Role managerRole;
 
     public static Role fromKoreanName(String name) {
         for (Role role : Role.values()) {

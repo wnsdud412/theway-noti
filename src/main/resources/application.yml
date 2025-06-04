@@ -29,7 +29,7 @@ logging:
     console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
     file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
   level:
-    root: INFO 
+    root: INFO
   logback:
     rollingpolicy:
       max-file-size: 10MB
