@@ -26,16 +26,10 @@ spring:
 
 logging:
   pattern:
-    console: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
-    file: "[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   level:
     root: INFO
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      max-history: 7
-  file:
-    name: /var/log/server.log
+    org.silkroadpartnership: DEBUG
 
 push:
   vapid:

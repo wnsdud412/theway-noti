@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <title>코드 분석기</title>
+  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link th:href="@{/css/piano.css}" rel="stylesheet" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Theway-noti">
+  <link rel="apple-touch-icon" href="/images/icon_192.png">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <style>
+    .chord-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .chord-input {
+      margin-bottom: 20px;
+    }
+    .chord-result {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .note-display {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 8px 12px;
+      margin: 4px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .interval-display {
+      display: inline-block;
+      background-color: #28a745;
+      color: white;
+      padding: 6px 10px;
+      margin: 2px;
+      border-radius: 15px;
+      font-size: 0.9em;
+    }
+    .error-message {
+      color: #dc3545;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="chord-container">
+    <h1 class="mb-4">코드 분석기</h1>
+    
+    <div class="chord-input">
+      <div class="input-group">
+        <input type="text" id="chordSymbol" class="form-control" placeholder="코드 기호를 입력하세요 (예: Cmaj7, Am7, Gsus4)" />
+        <button class="btn btn-primary" onclick="parseChord()">분석</button>
+      </div>
+      <small class="form-text text-muted">
+        예시: C, Dm, Gmaj7, Am7, Fsus4, C#dim, Baug, Em7b5, D/F#
+      </small>
+    </div>
+
+    <div id="chordResult" class="chord-result" style="display: none;">
+      <h3>분석 결과</h3>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <h5>기본 정보</h5>
+          <p><strong>원본 기호:</strong> <span id="originalSymbol"></span></p>
+          <p><strong>베이스음:</strong> <span id="bassNote"></span></p>
+        </div>
+        
+        <div class="col-md-6">
+          <h5>구성음</h5>
+          <div id="noteNames"></div>
+          
+          <h5 class="mt-3">음정</h5>
+          <div id="intervals"></div>
+        </div>
+      </div>
+      
+      <div class="mt-3">
+        <h5>반음 간격</h5>
+        <p id="semitones"></p>
+      </div>
+      
+      <div class="mt-3">
+        <button id="playChordBtn" class="btn btn-success" disabled>
+          <i class="bi bi-play-fill"></i> 코드 듣기
+        </button>
+        <small class="text-muted ms-2">아르페지오 → 화음 순서로 재생됩니다</small>
+      </div>
+      
+      <div class="mt-4">
+        <h5>피아노 건반</h5>
+        <div id="piano-container" class="piano-container">
+          <div id="piano-keyboard" class="piano-keyboard">
+            <!-- 흰 건반 레이어 -->
+            <div class="white-keys-layer">
+              <div class="piano-key white" data-note="C1"></div>
+              <div class="piano-key white" data-note="D1"></div>
+              <div class="piano-key white" data-note="E1"></div>
+              <div class="piano-key white" data-note="F1"></div>
+              <div class="piano-key white" data-note="G1"></div>
+              <div class="piano-key white" data-note="A1"></div>
+              <div class="piano-key white" data-note="B1"></div>
+              <div class="piano-key white" data-note="C2"></div>
+              <div class="piano-key white" data-note="D2"></div>
+              <div class="piano-key white" data-note="E2"></div>
+              <div class="piano-key white" data-note="F2"></div>
+              <div class="piano-key white" data-note="G2"></div>
+              <div class="piano-key white" data-note="A2"></div>
+              <div class="piano-key white" data-note="B2"></div>
+              <div class="piano-key white" data-note="C3"></div>
+              <div class="piano-key white" data-note="D3"></div>
+              <div class="piano-key white" data-note="E3"></div>
+              <div class="piano-key white" data-note="F3"></div>
+              <div class="piano-key white" data-note="G3"></div>
+              <div class="piano-key white" data-note="A3"></div>
+              <div class="piano-key white" data-note="B3"></div>
+              <div class="piano-key white" data-note="C4"></div>
+              <div class="piano-key white" data-note="D4"></div>
+              <div class="piano-key white" data-note="E4"></div>
+              <div class="piano-key white" data-note="F4"></div>
+              <div class="piano-key white" data-note="G4"></div>
+              <div class="piano-key white" data-note="A4"></div>
+              <div class="piano-key white" data-note="B4"></div>
+              <div class="piano-key white" data-note="C5"></div>
+              <div class="piano-key white" data-note="D5"></div>
+              <div class="piano-key white" data-note="E5"></div>
+              <div class="piano-key white" data-note="F5"></div>
+              <div class="piano-key white" data-note="G5"></div>
+              <div class="piano-key white" data-note="A5"></div>
+              <div class="piano-key white" data-note="B5"></div>
+              <div class="piano-key white" data-note="C6"></div>
+            </div>
+            
+            <!-- 검은 건반 레이어 -->
+            <div class="black-keys-layer">
+              <!-- 1옥타브 -->
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="C#1"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="D#1"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="F#1"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="G#1"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="A#1"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              
+              <!-- 2옥타브 -->
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="C#2"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="D#2"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="F#2"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="G#2"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="A#2"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              
+              <!-- 3옥타브 -->
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="C#3"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="D#3"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="F#3"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="G#3"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="A#3"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              
+              <!-- 4옥타브 -->
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="C#4"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="D#4"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="F#4"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="G#4"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="A#4"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              
+              <!-- 5옥타브 -->
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="C#5"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="D#5"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="F#5"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="G#5"></div>
+              <div class="spacer"></div>
+              <div class="piano-key black" data-note="A#5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <h5>기타 프렛보드 <small class="text-muted" id="fret-range-indicator"></small></h5>
+        <div id="fretboard-container" class="fretboard-container">
+          <div id="guitar-fretboard" class="guitar-fretboard show-nut">
+            <!-- 프렛 번호 헤더 -->
+            <div class="fret-header"></div>
+            <div class="fret-header">0</div>
+            <div class="fret-header">1</div>
+            <div class="fret-header">2</div>
+            <div class="fret-header">3</div>
+            <div class="fret-header">4</div>
+            <div class="fret-header">5</div>
+            
+            <!-- 1번줄 (가장 얇은 줄) -->
+            <div class="string-label">1</div>
+            <div class="fret-cell string-1" data-string="1" data-fret="0"></div>
+            <div class="fret-cell string-1" data-string="1" data-fret="1"></div>
+            <div class="fret-cell string-1" data-string="1" data-fret="2"></div>
+            <div class="fret-cell string-1" data-string="1" data-fret="3"></div>
+            <div class="fret-cell string-1" data-string="1" data-fret="4"></div>
+            <div class="fret-cell string-1" data-string="1" data-fret="5"></div>
+            
+            <!-- 2번줄 -->
+            <div class="string-label">2</div>
+            <div class="fret-cell string-2" data-string="2" data-fret="0"></div>
+            <div class="fret-cell string-2" data-string="2" data-fret="1"></div>
+            <div class="fret-cell string-2" data-string="2" data-fret="2"></div>
+            <div class="fret-cell string-2" data-string="2" data-fret="3"></div>
+            <div class="fret-cell string-2" data-string="2" data-fret="4"></div>
+            <div class="fret-cell string-2" data-string="2" data-fret="5"></div>
+            
+            <!-- 3번줄 -->
+            <div class="string-label">3</div>
+            <div class="fret-cell string-3" data-string="3" data-fret="0"></div>
+            <div class="fret-cell string-3" data-string="3" data-fret="1"></div>
+            <div class="fret-cell string-3" data-string="3" data-fret="2"></div>
+            <div class="fret-cell string-3" data-string="3" data-fret="3"></div>
+            <div class="fret-cell string-3" data-string="3" data-fret="4"></div>
+            <div class="fret-cell string-3" data-string="3" data-fret="5"></div>
+            
+            <!-- 4번줄 -->
+            <div class="string-label">4</div>
+            <div class="fret-cell string-4" data-string="4" data-fret="0"></div>
+            <div class="fret-cell string-4" data-string="4" data-fret="1"></div>
+            <div class="fret-cell string-4" data-string="4" data-fret="2"></div>
+            <div class="fret-cell string-4" data-string="4" data-fret="3"></div>
+            <div class="fret-cell string-4" data-string="4" data-fret="4"></div>
+            <div class="fret-cell string-4" data-string="4" data-fret="5"></div>
+            
+            <!-- 5번줄 -->
+            <div class="string-label">5</div>
+            <div class="fret-cell string-5" data-string="5" data-fret="0"></div>
+            <div class="fret-cell string-5" data-string="5" data-fret="1"></div>
+            <div class="fret-cell string-5" data-string="5" data-fret="2"></div>
+            <div class="fret-cell string-5" data-string="5" data-fret="3"></div>
+            <div class="fret-cell string-5" data-string="5" data-fret="4"></div>
+            <div class="fret-cell string-5" data-string="5" data-fret="5"></div>
+            
+            <!-- 6번줄 (가장 굵은 줄) -->
+            <div class="string-label">6</div>
+            <div class="fret-cell string-6" data-string="6" data-fret="0"></div>
+            <div class="fret-cell string-6" data-string="6" data-fret="1"></div>
+            <div class="fret-cell string-6" data-string="6" data-fret="2"></div>
+            <div class="fret-cell string-6" data-string="6" data-fret="3"></div>
+            <div class="fret-cell string-6" data-string="6" data-fret="4"></div>
+            <div class="fret-cell string-6" data-string="6" data-fret="5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.js"></script>
+  <script th:src="@{/js/chord.js}"></script>
+</body>
+
+</html>

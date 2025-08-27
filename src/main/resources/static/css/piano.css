@@ -1,0 +1,289 @@
+
+.piano-container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 20px 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow-x: auto;
+  position: relative;
+}
+
+.piano-keyboard {
+  position: relative;
+  background-color: #2c2c2c;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  border: 2px solid #1a1a1a;
+  width: 100%;
+  height: 170px;
+}
+
+.piano-key {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.piano-key.white:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.piano-key.black:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+
+
+/* 피아노 컨테이너 스크롤 처리 */
+.piano-container {
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.piano-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.piano-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.piano-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.piano-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 흰 건반 레이어 */
+.white-keys-layer {
+  white-space: nowrap;
+  font-size: 0; /* 인라인 블록 간격 제거 */
+}
+
+.white-keys-layer .piano-key.white {
+  width: 2.78%;
+  height: 140px;
+  background: linear-gradient(to bottom, #ffffff 0%, #f8f8f8 100%);
+  display: inline-block;
+  border-radius: 0 0 6px 6px;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  vertical-align: top;
+  border: 1px solid #999;
+}
+
+/* 검은 건반 레이어 */
+.black-keys-layer {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: calc(100% - 30px);
+  white-space: nowrap;
+  font-size: 0; /* 인라인 블록 간격 제거 */
+  z-index: 2;
+}
+
+.black-keys-layer .piano-key.black {
+  width: 2.224%; /* 흰 건반의 4/5 */
+  height: 90px;
+  background: linear-gradient(to bottom, #2c2c2c 0%, #1a1a1a 100%);
+  display: inline-block;
+  border-radius: 0 0 4px 4px;
+  border: 1px solid #000;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  vertical-align: top;
+  margin: 0; /* 마진 제거 */
+}
+
+.black-keys-layer .spacer {
+  display: inline-block;
+  width: 0.556%; /* 흰 건반의 1/5 */
+  height: 1px;
+  visibility: hidden; /* 투명하지만 자리는 차지 */
+  margin: 0; /* 마진 제거 */
+}
+
+/* 건반 하이라이트 스타일 */
+.piano-key.left-hand {
+  background: linear-gradient(to bottom, #4a90e2 0%, #357abd 100%) !important;
+  box-shadow: 0 3px 8px rgba(74, 144, 226, 0.4) !important;
+  border: 2px solid #2e6da4 !important;
+}
+
+.piano-key.right-hand {
+  background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 100%) !important;
+  box-shadow: 0 3px 8px rgba(231, 76, 60, 0.4) !important;
+  border: 2px solid #a93226 !important;
+}
+
+.piano-key.left-hand.black {
+  background: linear-gradient(to bottom, #2980b9 0%, #1f618d 100%) !important;
+  border: 2px solid #154360 !important;
+}
+
+.piano-key.right-hand.black {
+  background: linear-gradient(to bottom, #c0392b 0%, #922b21 100%) !important;
+  border: 2px solid #7b241c !important;
+}
+
+/* 기타 프렛보드 스타일링 - Grid 방식 */
+.fretboard-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.guitar-fretboard {
+  display: grid;
+  grid-template-columns: 0.3fr 0.5fr repeat(5, 1fr);
+  grid-template-rows: 25px repeat(6, 40px);
+  width: 100%;
+  max-width: 600px;
+}
+
+.fret-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  background: transparent;
+}
+
+.string-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  background: transparent;
+}
+
+/* 개방현(0프렛) - 배경 투명, 현 표시 없음 */
+.fret-cell[data-fret="0"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: pointer;
+}
+
+.fret-cell[data-fret="0"]::before {
+  display: none;
+}
+
+/* 프렛보드 부분(1~5프렛) - 흰색 배경 */
+.fret-cell:not([data-fret="0"]) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* 너트 표시 - 클래스로 관리 */
+.guitar-fretboard.show-nut .fret-cell[data-fret="1"] {
+  border-left: 6px solid #333;
+  box-shadow: inset 2px 0 0 #fff, inset 4px 0 0 #333;
+}
+
+/* 프렛바 표시 - 개방현 제외 */
+.fret-cell:not([data-fret="0"]) {
+  border-right: 3px solid #333;
+}
+
+/* 마지막 프렛바 제거용 클래스 */
+.last-fret {
+  border-right: none !important;
+}
+
+/* 각 현의 가로선 */
+.fret-cell::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(to right, #555 0%, #888 50%, #555 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+/* 현별 굵기 */
+.string-1::before { height: 1.5px; }
+.string-2::before { height: 1.8px; }
+.string-3::before { height: 2px; }
+.string-4::before { height: 2.2px; }
+.string-5::before { height: 2.5px; }
+.string-6::before { height: 3px; }
+
+/* 운지법 표시 */
+.fret-cell.pressed::after {
+  content: '';
+  position: absolute;
+  width: 35%;
+  aspect-ratio: 1; /* 정사각형 유지 */
+  top: 50%;
+  left: 60%;
+  transform: translateY(-50%); /* 수직 중앙 정렬 */
+  background: #c3fea2;
+  border-radius: 50%;
+  border: 3px solid black;
+  z-index: 2;
+}
+
+.fret-cell.open::after {
+  content: 'O';
+  position: absolute;
+  font-size: 18px;
+  font-weight: bold;
+  color: #28a745;
+  z-index: 2;
+}
+
+.fret-cell.muted::after {
+  content: '✕';
+  position: absolute;
+  font-size: 18px;
+  font-weight: bold;
+  color: #dc3545;
+  z-index: 2;
+}
+
+.fretboard-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.fretboard-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.fretboard-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+
+
+
+
