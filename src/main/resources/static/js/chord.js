@@ -35,7 +35,6 @@ function parseChord() {
     getGuitarFingering(data);
   })
   .catch(error => {
-    console.error('Error:', error);
     showError(error.message || '코드 분석 중 오류가 발생했습니다.');
   });
 }
@@ -75,7 +74,7 @@ function displayResult(data) {
   if (data.unparsedRemainder && data.unparsedRemainder.trim() !== '') {
     exampleText.innerHTML = `<span style="color: #dc3545;"><i class="bi bi-exclamation-triangle"></i> 파싱되지 않은 부분: "${data.unparsedRemainder}"</span>`;
   } else {
-    exampleText.innerHTML = '예시: C, Dm, Gmaj7, Am7, Fsus4, C#dim, Baug, Em7b5, D/F#';
+    exampleText.innerHTML = '예시: C, Dm, Gmaj7, Am7, Fsus4, C#dim, Baug, Em7b5, D/F#<br>키옮김: C+2 (2반음 올림), Am-3 (3반음 내림), Gmaj7+5 (5반음 올림)';
   }
   
   // 피아노 건반 하이라이트
@@ -145,7 +144,6 @@ function getGuitarFingering(chordData) {
     }
   })
   .catch(error => {
-    console.error('기타 운지법 API 에러:', error);
   });
 }
 
@@ -329,7 +327,6 @@ function displayGuitarFingering(fingeringData) {
   clearGuitarHighlight();
   
   if (!fingeringData || !fingeringData.patterns || fingeringData.patterns.length === 0) {
-    console.error('운지법 패턴이 없습니다.');
     return;
   }
   
@@ -376,7 +373,6 @@ function initializeAudio() {
 // 코드 재생 함수 (아르페지오 → 화음)
 async function playChord(noteNames, bassNote) {
   if (!synth) {
-    console.error('신디사이저가 초기화되지 않았습니다.');
     return;
   }
   
@@ -415,7 +411,6 @@ async function playChord(noteNames, bassNote) {
     }, totalDuration);
     
   } catch (error) {
-    console.error('오디오 재생 오류:', error);
     const playBtn = document.getElementById('playChordBtn');
     playBtn.disabled = false;
     playBtn.innerHTML = '<i class="bi bi-play-fill"></i> 코드 듣기';

@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.silkroadpartnership.theway_noti.user.entity.Role;
 import org.silkroadpartnership.theway_noti.user.entity.User;
@@ -100,8 +99,6 @@ public class WebpushService {
                   .role(role)
                   .checkYn(0)
                   .build());
-      String responseBody = EntityUtils.toString(response.getEntity());
-      log.info(responseBody);
     }
   }
 

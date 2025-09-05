@@ -24,7 +24,6 @@ async function registerPush() {
 
       alert('구독 등록 완료!');
     } catch (error) {
-      console.error('구독 등록 중 오류 발생:', error);
     }
   } else {
     alert('Service Worker를 지원하지 않는 브라우저입니다.');

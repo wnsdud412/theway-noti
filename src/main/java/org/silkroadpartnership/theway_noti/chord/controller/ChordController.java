@@ -5,7 +5,11 @@ import org.silkroadpartnership.theway_noti.chord.entity.GuitarFingeringResult;
 import org.silkroadpartnership.theway_noti.chord.service.ChordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +48,6 @@ public class ChordController {
     @ResponseBody
     public ResponseEntity<GuitarFingeringResult> getGuitarFingering(@RequestBody ChordParseResult chordResult) {
         try {
-            log.debug("Getting guitar fingering for chord: {}", chordResult.getOriginalSymbol());
             GuitarFingeringResult result = chordService.getGuitarFingerings(chordResult);
             return ResponseEntity.ok(result);
         } catch (IllegalArgumentException e) {

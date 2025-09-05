@@ -82,8 +82,7 @@ public class WebpushController {
       try {
         webpushService.sendPushNotification(subscription, null, "전체 알림 테스트", message);
       } catch (Exception e) {
-        log.info("[Push] 푸시 전송 중 오류 발생: " + e.getMessage());
-        e.printStackTrace();
+        log.error("[Push] 푸시 전송 중 오류 발생", e);
       }
     });
     return ResponseEntity.ok("푸시 전송 완료");
@@ -96,8 +95,7 @@ public class WebpushController {
     try {
       webpushService.sendPushNotification(subscription, null, "개별 알림 테스트", message);
     } catch (Exception e) {
-      log.info("[Push] 푸시 전송 중 오류 발생: " + e.getMessage());
-      e.printStackTrace();
+      log.error("[Push] 푸시 전송 중 오류 발생", e);
     }
     return ResponseEntity.ok("푸시 전송 완료");
   }

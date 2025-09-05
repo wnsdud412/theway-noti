@@ -16,6 +16,7 @@ java {
 repositories {
 	mavenLocal() 
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 	maven {
 		url = 'https://www.googleapis.com/download/storage/v1/b/google-api-java-client-production/o'
 		content {
@@ -55,6 +56,8 @@ dependencies {
 	implementation 'com.google.http-client:google-http-client-gson:1.43.3'
 	//user-agent-parser
 	implementation 'eu.bitwalker:UserAgentUtils:1.21'
+	//youtube-downloader
+	implementation 'com.github.sealedtx:java-youtube-downloader:3.3.1'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

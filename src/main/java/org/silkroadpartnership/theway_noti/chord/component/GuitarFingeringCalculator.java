@@ -1,6 +1,11 @@
 package org.silkroadpartnership.theway_noti.chord.component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.silkroadpartnership.theway_noti.chord.entity.BarreInfo;
@@ -354,8 +359,9 @@ public class GuitarFingeringCalculator {
             }
         }
         
-        // 최소 3개의 구성음이 배치되었는지 확인
-        return placedNotes.size() >= Math.min(3, chordNotes.size());
+        // 파워코드는 2개, 일반 코드는 최소 3개 구성음 필요
+        int minimumNotes = chordNotes.size() == 2 ? 2 : 3;
+        return placedNotes.size() >= Math.min(minimumNotes, chordNotes.size());
     }
     
     /**
@@ -558,6 +564,24 @@ public class GuitarFingeringCalculator {
                         }
                     }
                     if (placed) break;
+                }
+            }
+            
+            // 미정 상태 현에서 못 찾았을 경우, 개방현으로 이미 정의된 현에서 구성음 찾기
+            if (!placed) {
+                for (int string = 1; string <= 6; string++) {
+                    if (pattern[string] == 0) { // 개방현으로 정의된 줄
+                        int[] possibleFrets = MusicUtils.findFretsForNote(string, note);
+                        for (int fret : possibleFrets) {
+                            if (fret > 0 && fret <= 3) { // 1~3프렛 이내
+                                pattern[string] = fret;
+                                placedNotes.add(note);
+                                placed = true;
+                                break;
+                            }
+                        }
+                        if (placed) break;
+                    }
                 }
             }
         }

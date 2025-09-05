@@ -16,4 +16,9 @@ public class HomeController {
   public String getHomePage(Model model) {
     return "admin/index";
   }
+  
+  @GetMapping("/audio-player")
+  public String getAudioPlayerPage(Model model) {
+    return "audio-player";
+  }
 }
